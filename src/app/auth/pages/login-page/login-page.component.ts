@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import Swal from 'sweetalert2';
+
 
 
 @Component({
@@ -16,7 +17,7 @@ import Swal from 'sweetalert2';
 export class LoginPageComponent {
 
   private formBuilder = inject(FormBuilder)
-
+  private router = inject(Router);
   private authService = inject(AuthService);
 
   public formularioLogin: FormGroup = this.formBuilder.group(
@@ -27,7 +28,7 @@ export class LoginPageComponent {
   )
 
   constructor(
-
+    // private router: Router,
   ) {
 
   }
@@ -38,7 +39,7 @@ export class LoginPageComponent {
     this.authService.iniciarSesion(email, password)
       .subscribe(
         {
-          next: () => console.log('Inicio de sesion exitosa'),
+          next: () => this.router.navigateByUrl('/dashboard'),
           error: (mensajeDeError) => {
             Swal.fire('Ups!', mensajeDeError, 'error')
           }

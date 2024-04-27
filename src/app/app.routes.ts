@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { autenticadoGuard } from './auth/guards/autenticado.guard';
 
 export const routes: Routes = [
     {
@@ -8,7 +9,7 @@ export const routes: Routes = [
     },
     {
         path: 'dashboard',
-        //guards
+        canActivate: [autenticadoGuard],
         loadChildren: () => import('./dashboard/dashboard-routing.module').then(m => m.DashboardRoutingModule)
     },
     {
