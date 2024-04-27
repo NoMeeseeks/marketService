@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -35,9 +36,13 @@ export class LoginPageComponent {
     const { email, password } = this.formularioLogin.value;
 
     this.authService.iniciarSesion(email, password)
-      .subscribe(succes => {
-        console.log(succes);
-
-      })
+      .subscribe(
+        {
+          next: () => console.log('Inicio de sesion exitosa'),
+          error: (mensajeDeError) => {
+            Swal.fire('Ups!', mensajeDeError, 'error')
+          }
+        }
+      )
   }
 }
