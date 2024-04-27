@@ -23,10 +23,19 @@ export class AuthService {
   public usuarioActual = computed(() => this._usuarioActual())
   public estadoAutenticado = computed(() => this._estadoAutenticado())
 
+
   constructor(
 
   ) {
 
+  }
+
+  private setearAutenticacion(usuario: Usuario, token: string): boolean {
+    this._usuarioActual.set(usuario);
+    this._estadoAutenticado.set(EstadoAutenticacion.verificado);
+    localStorage.setItem('token', token)
+
+    return true
   }
 
   iniciarSesion(correo: string, contrasena: string): Observable<boolean> {
@@ -36,14 +45,7 @@ export class AuthService {
 
     return this.httpClient.post<LoginResponse>(url, body)
       .pipe(
-        //ESTO DISPARA UN EFECTO SECUNDARIO
-        tap(response => {
-          this._usuarioActual.set(response.usuario);
-          this._estadoAutenticado.set(EstadoAutenticacion.verificado);
-
-          localStorage.setItem('token', response.token)
-        }),
-        map(() => true),
+        map(response => this.setearAutenticacion(response.usuario, response.token)),
 
         // TODO : ERRORES
         catchError(err => throwError(() => err.error.message)
@@ -63,14 +65,7 @@ export class AuthService {
 
     return this.httpClient.get<ValidarToken>(url, { headers })
       .pipe(
-        map(
-          (response) => {
-            this._usuarioActual.set(response.usuario);
-            this._estadoAutenticado.set(EstadoAutenticacion.verificado);
-            localStorage.setItem('token', response.token)
-            return true
-          }
-        ),
+        map(response => this.setearAutenticacion(response.usuario, response.token)),
 
         //error
         catchError(() => {
