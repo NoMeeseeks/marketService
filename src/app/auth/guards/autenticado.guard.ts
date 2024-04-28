@@ -9,11 +9,15 @@ export const autenticadoGuard: CanActivateFn = (route, state) => {
 
   // const url = state.url;
   // localStorage.setItem('path',url);
-
   const authService = inject(AuthService)
+
   if (authService.estadoAutenticado() === EstadoAutenticacion.verificado) {
     return true;
   };
+  if (authService.estadoAutenticado() === EstadoAutenticacion.comprobando) {
+    return false
+  }
+
 
   router.navigateByUrl('/auth/login')
   return false;

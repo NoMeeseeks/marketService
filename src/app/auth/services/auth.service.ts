@@ -27,7 +27,7 @@ export class AuthService {
   constructor(
 
   ) {
-
+    this.verificar().subscribe();
   }
 
   private setearAutenticacion(usuario: Usuario, token: string): boolean {

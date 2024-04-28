@@ -1,1 +1,4 @@
-<router-outlet />
+<h1 *ngIf="!finalizarVerficacion()">Cargando contenido...</h1>
+
+<router-outlet *ngIf="finalizarVerficacion()" />
+<!-- <router-outlet /> -->
