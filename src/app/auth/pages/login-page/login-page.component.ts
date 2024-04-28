@@ -39,7 +39,24 @@ export class LoginPageComponent {
     this.authService.iniciarSesion(email, password)
       .subscribe(
         {
-          next: () => this.router.navigateByUrl('/dashboard'),
+          next: () => {
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top",
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+              }
+            });
+            Toast.fire({
+              icon: "success",
+              title: `Bienvenido ${email}`
+            });
+            this.router.navigateByUrl('/dashboard')
+          },
           error: (mensajeDeError) => {
             Swal.fire('Ups!', mensajeDeError, 'error')
           }
