@@ -2,8 +2,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { environments } from '../../../environments/environments';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, map, of, tap, throwError } from 'rxjs';
-import { EstadoAutenticacion, LoginResponse, Usuario } from '../interfaces';
-import { ValidarToken } from '../interfaces/validar-token';
+import { EstadoAutenticacion, LoginResponse, Usuario, Registro, ValidarToken } from '../interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -84,7 +83,22 @@ export class AuthService {
     localStorage.removeItem('token')
   }
 
-  registrarse() {
-
+  registrarse(nombre: string, correo: string, contrasena: string): Observable<boolean> {
+    const url = `${this.urlBase}/auth/registrarse`
+    const body = {
+      nombre: nombre,
+      correo: correo,
+      contrasena: contrasena,
+    }
+    return this.httpClient.post<Registro>(url, body)
+      .pipe(
+        map(response => true),
+        //error
+        catchError(() => {
+          this._estadoAutenticado.set(EstadoAutenticacion.noVerificado)
+          return of(false)
+        })
+      )
   }
+
 }
