@@ -23,7 +23,6 @@ export class AuthService {
   public usuarioActual = computed(() => this._usuarioActual())
   public estadoAutenticado = computed(() => this._estadoAutenticado())
 
-
   constructor(
 
   ) {
@@ -58,7 +57,11 @@ export class AuthService {
   verificar(): Observable<boolean> {
     const url = `${this.urlBase}/auth/verificarToken`
     const token = localStorage.getItem('token')
-    if (!token) return of(false);
+
+    if (!token) {
+      this.cerrarSesion();
+      return of(false)
+    };
 
     const headers = new HttpHeaders()
       .set('Authorization', `Bearer ${token}`)
@@ -75,4 +78,13 @@ export class AuthService {
       )
   }
 
+  cerrarSesion() {
+    this._usuarioActual.set(null)
+    this._estadoAutenticado.set(EstadoAutenticacion.noVerificado);
+    localStorage.removeItem('token')
+  }
+
+  registrarse() {
+
+  }
 }
